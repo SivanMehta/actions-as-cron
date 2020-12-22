@@ -4,6 +4,12 @@ const read = promisify(fs.readFile);
 const write = promisify(fs.writeFile);
 const fetch = require('node-fetch');
 
+/**
+ * Get trending topics in the US
+ *
+ * @param {String} token bearer token
+ * @returns {Object}
+ */
 async function getTopics(token) {
   const data = await fetch('https://api.twitter.com/1.1/trends/place.json?id=23424977', {
     headers: {
@@ -17,12 +23,30 @@ async function getTopics(token) {
     .sort((a, b) => a.tweet_volume > b.tweet_volume);
 }
 
+/**
+ * Get popular tweets for a given trend
+ *
+ * @param {*} trend trending topic
+ * @param {*} token bearer token
+ */
+async function getContent(trend, token) {
+  const data = await fetch(`https://api.twitter.com/1.1/search/tweets.json?q=${trend.query}&result_type=popular&count=100`, {
+    headers: {
+      Authorization: 'Bearer ' + token
+    }
+  }).then(res => res.json());
+
+  return data.statuses.map(t => t.text);
+}
+
 async function run(filename) {
   const secrets = await read('secrets.json');
   const token = JSON.parse(secrets).bearer;
-  const topics = await getTopics(token);
 
-  const content = topics;
+  const topics = await getTopics(token);
+  console.log(topics);
+  const contentJobs = topics.map(trend => getContent(trend, token));
+  const content = await Promise.all(contentJobs);
 
   await write(filename, JSON.stringify(content, null, 2));
 };

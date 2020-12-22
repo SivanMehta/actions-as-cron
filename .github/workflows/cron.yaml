@@ -21,8 +21,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci --production
       
-      - name: Generate Chains
+      - name: Scrape Data
         run: node scrape.js
+
+      - name: Generate Markov Chains
+        run: node generate.js
 
       - name: Tweet from Chains
         run: node tweet.js
