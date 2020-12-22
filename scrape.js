@@ -36,7 +36,12 @@ async function getContent(trend, token) {
     }
   }).then(res => res.json());
 
-  return data.statuses.map(t => t.text);
+  const content = data
+    .statuses
+    .map(t => t.text.split('https://')[0])
+    .map(t => t.replace('…', ''));
+
+  return [trend.name, content];
 }
 
 async function run(filename) {
@@ -44,7 +49,6 @@ async function run(filename) {
   const token = JSON.parse(secrets).bearer;
 
   const topics = await getTopics(token);
-  console.log(topics);
   const contentJobs = topics.map(trend => getContent(trend, token));
   const content = await Promise.all(contentJobs);
 

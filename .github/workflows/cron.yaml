@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Regurgitate Tweets
+    name: Generate Tweets
     runs-on: ubuntu-latest
       
     steps:
@@ -24,8 +24,5 @@ jobs:
       - name: Scrape Data
         run: node scrape.js
 
-      - name: Generate Markov Chains
-        run: node generate.js
-
-      - name: Tweet from Chains
+      - name: Generate Chains and tweet from each
         run: node tweet.js
