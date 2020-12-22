@@ -1,7 +1,8 @@
 name: Build and deploy Lambda
 on:
-  push:
-    branches: [ main ]
+  schedule:
+    # run this job every 10 minutes
+    - cron:  '*/10 * * * *'
 
 jobs:
   build:
