@@ -1,0 +1,29 @@
+name: Build and deploy Lambda
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build assets
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+
+      - name: Build Artifact
+        run: |
+          npm ci --production
+          npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: trend-content
+          path: content.json
