@@ -1,4 +1,4 @@
-name: Build and deploy Lambda
+name: Gather tweet data
 on:
   schedule:
     # run this job every 10 minutes
@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build assets
+    name: Regurgitate Tweets
     runs-on: ubuntu-latest
       
     steps:
@@ -18,13 +18,11 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Build Artifact
-        run: |
-          npm ci --production
-          npm run build
+      - name: Install
+        run: npm ci --production
+      
+      - name: Generate Chains
+        run: node scrape.js
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: trend-content
-          path: content.json
+      - name: Tweet from Chains
+        run: node tweet.js
