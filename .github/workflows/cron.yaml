@@ -25,7 +25,7 @@ jobs:
         run: npm ci --production
       
       - name: Scrape Data
-        run: node scrape.js
+        run: BEARER=${{ secrets.BEARER }} node scrape.js
 
       - name: Generate Chains and tweet from each
         run: node tweet.js

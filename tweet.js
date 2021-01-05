@@ -9,7 +9,7 @@ function generateTweets([ topic, tweets ]) {
   chain.addStates(tweets);
   chain.train(3);
 
-  return chain.generateRandom(240);
+  return topic + ": " + chain.generateRandom(240 - topic.length - 2);
 }
 
 async function tweet(content, token) {
@@ -38,11 +38,12 @@ async function getAuthToken({ token, token_secret }) {
 
 async function run(filename) {
   const content = await read(filename);
-  
   const topics = JSON.parse(content);
   const tweets = topics.map(generateTweets);
-  console.log(tweets);
+  tweets.forEach(t => console.log(t))
 
+  // need to get auth token
+  // need to tweet
 }
 
 run('content.json');

@@ -44,9 +44,21 @@ async function getContent(trend, token) {
   return [trend.name, content];
 }
 
+async function getSecrets() {
+  const secretFile = 'secrets.json';
+  if (fs.existsSync(secretFile)) {
+    const content = await read('secrets.json');
+    return JSON.parse(content);
+  } else {
+    return {
+      bearer: process.env.BEARER
+    };
+  }
+}
+
 async function run(filename) {
-  const secrets = await read('secrets.json');
-  const token = JSON.parse(secrets).bearer;
+  const secrets = await getSecrets();
+  const token = secrets.bearer;
 
   const topics = await getTopics(token);
   const contentJobs = topics.map(trend => getContent(trend, token));
