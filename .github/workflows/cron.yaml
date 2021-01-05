@@ -1,8 +1,11 @@
 name: Gather tweet data
 on:
+  # run this job every 1 hour
   schedule:
-    # run this job every 1 hour
     - cron:  '0 */1 * * *'
+  # and also whenever we push new changes
+  push:
+    branches: [ main ]
 
 jobs:
   build:
