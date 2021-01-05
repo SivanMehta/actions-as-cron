@@ -13,10 +13,23 @@ function generateTweets([ topic, tweets ]) {
 }
 
 async function tweet(content, token) {
-  const res = await fetch('https://api.twitter.com/1.1/statuses/update.json?status=hello', {
+  const status = encodeURI('I\'m back');
+  const res = await fetch(`https://api.twitter.com/1.1/statuses/update.json?status=${status}`, {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer ' + token
+      'Authorization': 'Bearer ' + token,
+    }
+  }).then(res => res.json());
+
+  return res;
+}
+
+async function getAuthToken({ token, token_secret }) {
+  const res = await fetch('https://api.twitter.com/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': "application/x-www-form-urlencoded;charset=UTF-8",
+      'Authorization': 'Basic ' + token + ':' + token_secret,
     }
   }).then(res => res.json());
 
@@ -24,16 +37,11 @@ async function tweet(content, token) {
 }
 
 async function run(filename) {
-  // const content = await read(filename);
+  const content = await read(filename);
   
-  // const topics = JSON.parse(content);
-  // const tweets = topics.map(generateTweets);
-
-  const secrets = await read('secrets.json');
-  const token = JSON.parse(secrets).bearer;
-
-  const res = await tweet('wat', token);
-  console.log(res);
+  const topics = JSON.parse(content);
+  const tweets = topics.map(generateTweets);
+  console.log(tweets);
 
 }
 
